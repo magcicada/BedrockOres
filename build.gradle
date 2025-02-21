@@ -3,11 +3,13 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath("com.anatawa12.forge:ForgeGradle:2.3-1.0.+") {
+            changing = true
+        }
     }
 }
 
@@ -64,11 +66,13 @@ minecraft {
 repositories {
     maven { url "http://dvs1.progwml6.com/files/maven" }
     maven { url = "http://maven.covers1624.net" }
+    maven { url "https://cursemaven.com" }
 }
 
 dependencies {
     deobfCompile "mezz.jei:jei_${config.minecraft.version}:${config.jei.version}"
-    deobfCompile "cofh:RedstoneFlux:${config.minecraft.version}-${config.rf.version}:universal"
+    //deobfCompile "cofh:RedstoneFlux:${config.minecraft.version}-${config.rf.version}:universal"
+    deobfCompile "curse.maven:redstone-flux-270789:2920436"
 }
 
 processResources {
