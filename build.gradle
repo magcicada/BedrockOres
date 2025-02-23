@@ -1,6 +1,14 @@
 buildscript {
     repositories {
-        maven { url = "https://maven.minecraftforge.net/" }
+        mavenLocal()
+        flatDir {
+            dirs 'libs'
+        }
+        maven {
+            name = "aliyun-public"
+            url = "https://maven.minecraftforge.net/"
+        }
+        jcenter()
     }
     dependencies {
         classpath("com.anatawa12.forge:ForgeGradle:2.3-1.0.+") {
@@ -8,12 +16,15 @@ buildscript {
         }
     }
 }
+
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = config.mod.version
-group = config.mod.group
-archivesBaseName = config.mod.name
+
+version = "1.662"
+group = "net.lrsoft.mets" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "mets"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -23,52 +34,67 @@ compileJava {
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
-
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "stable_39"
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    //mappings channel: 'snapshot', version: '20171003-1.12'
+    mappings = "snapshot_20171003"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+}
 
 repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" }
-    maven { url = "http://maven.covers1624.net" }
-    maven { url "https://cursemaven.com" }
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "azanor"
+        url = "http://maven.thiakil.com"
+    }
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_${config.minecraft.version}:${config.jei.version}"
-    //deobfCompile "cofh:RedstoneFlux:${config.minecraft.version}-${config.rf.version}:universal"
-    deobfCompile "curse.maven:redstone-flux-270789:2920436"
+    deobfCompile "mezz.jei:jei_1.12.2:4.16.1.302"
+    compile files ("libs/industrialcraft-2-2.8.222-ex112-dev.jar")
+    compile files ("libs/SlashBlade-mc1.12-r32-deobf.jar")
+    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
+    //implementation fg.deobf("curse.maven:baubles-227083:2518667")
+    deobfCompile ("curse.maven:the-last-smith-306385:3314856")
+    runtimeOnly ("curse.maven:mysterious-mountain-lib-368098:3254750")
 }
 
-    processResources {
-        // this will ensure that this task is redone when the versions change.
-        inputs.property "version", project.version
-        inputs.property "mcversion", project.minecraft.version
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    // inputs.property "version", project.version
+    // inputs.property "mcversion", project.minecraft.version
 
-        // replace stuff in mcmod.info, nothing else
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
-
-            // replace version and mcversion
-            expand 'version': project.version, 'mcversion': project.minecraft.version
-        }
-
-        // copy everything else except the mcmod.info
-        from(sourceSets.main.resources.srcDirs) {
-            exclude 'mcmod.info'
-        }
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        // expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-
-    jar {
-        manifest {
-            attributes([
-                    "FMLAT": "bedrockores_at.cfg"
-            ])
-        }
+        
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }
+
+tasks.withType(JavaCompile)
+{
+	options.encoding="UTF-8"
+}
+
